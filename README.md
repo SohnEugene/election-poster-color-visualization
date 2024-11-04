@@ -70,19 +70,50 @@
 우리가 알고 싶었던 것은 모든 벽보에 공통적으로 들어가 있는 사람의 얼굴 이외의 다른 요소에 어떤 색이 얼마나 활용되었는지였기에 후보자를 마스킹처리하여 대표색 추출 시 포함되지 않도록 하였다.
 위와 같은 과정을 거치면 후보자가 입고 있는 옷이나 넥타이의 색깔이 누락되기에 필요한 색 정보가 소실된다는 우려가 있었지만, 이에 해당하는 사례가 비교적 적었기에 일괄적으로 마스킹 처리를 하기로 결정하였다.
 
-인물 인식을 위해 구글에서 제공하는 deepLab 모델의 semantic segmentation 기능을 사용하였다.
-
-디테일한 코드 구현은 [링크](https://meissa.tistory.com/37)를 참조했다.
-다음은 올해 4월 치러진 22대 총선, 관악구 갑, 을 선거구에 출마한 더불어민주당과 국민의힘 4명의 후보에 대해서 테스트로 인물 마스킹을 적용한 결과이다.
+인물 인식을 위해서는 Semantic Segmentation(의미적 분할)을 사용하였다. 
+Semantic Segmentation은 입력된 이미지에 각 픽셀에 특정한 클래스 라벨을 할당하는 것을 목적으로 하는 컴퓨터 비전의 한 분야로 자율주행, 영상 의학 등 다양한 분야에 널리 활용되고 있다.
+아래 사진[(출처)](chrome-extension://efaidnbmnnnibpcajpcglclefindmkaj/https://cs231n.stanford.edu/slides/2017/cs231n_2017_lecture11.pdf)은 Semantic Segmentation이 적용된 예시이다. 
+이미지가 그 내용(semantic)에 따라 분할(segmentation)된 것을 확인할 수 있다.
 <br/>
 <br/>
-![Frame 1](https://github.com/user-attachments/assets/5836551e-07a5-438d-9435-3c37ab3f0676)
+<img width="377" alt="image" src="https://github.com/user-attachments/assets/5f8d2423-2284-48ef-bfe7-f88e87b8950e">
 <br/>
 <br/>
-인물과 텍스트 영역이 깔끔하게 구분되지 않은 
+[Deeplab](https://github.com/tensorflow/models/tree/master/research/deeplab)은 구글이 2015년 공개한 Semantic Segmentation 모델의 이름이다. 
+Semantic Segmentation 모델은 일반적으로 downsampling-upsampling과정을 거치는데, Deeplab은 그 과정에 Astrous Convolution(확장된 합성곱)을 사용하여 해상도를 유지하는 것을 특징으로 하며 상당히 좋은 성능을 보인다. 
+이 프로젝트에서는 Deeplab 모델을 사용하여 벽보 이미지를 여러 클래스로 나누고, 인물 클래스에 해당하는 픽셀만을 마스킹처리하여 사용하였다. 
+디테일한 코드 구현은 Deeplab에서 제공하는 [데모](https://colab.research.google.com/github/tensorflow/models/blob/master/research/deeplab/deeplab_demo.ipynb) 코랩 파일과 [링크](https://meissa.tistory.com/37)를 참조했다.
+<br/>
+<br/>
+다음은 올해 4월 치러진 22대 총선, 관악구 갑, 을 선거구에 출마한 더불어민주당과 국민의힘 4명의 후보의 공보물 표지 이미지에 테스트로 인물 마스킹을 적용한 결과이다. (초상권 문제로 인해 블러 처리)
+<br/>
+<br/>
+![Frame 1 (1)](https://github.com/user-attachments/assets/f947fd7c-1c9f-4ae4-ae22-bfe6f69c7b1b)
+<br/>
+<br/>
+인물과 텍스트 영역이 깔끔하게 구분되지 않은 이미지의 경우 Deeplab 모델의 인식 결과가 충분하지 않았다. 
+따라서 텍스트 영역을 미리 마스킹 처리하여 semantic segmentation에서 제외시키는 방법을 시도해보았다. 
+여러 번 시도했을 떄 복잡한 얼굴 영역도 텍스트로 잡는 경우가 대다수 있었기에 얼굴 인식하여 그 영역을 제외한 후 텍스트 인식 알고리즘을 적용하였다. 
+텍스트 영역 인식을 위해서는 openCV에서 제공하는 [convexHull](https://prlabhotelshoe.tistory.com/42) 알고리즘을, 얼굴 영역 인식을 위해서는 마찬가지로 openCV에서 제공하는 [Haar-Cascade face detection](https://bkshin.tistory.com/entry/%EC%BB%B4%ED%93%A8%ED%84%B0-%EB%B9%84%EC%A0%84-1-%ED%95%98%EB%A5%B4-%EC%BA%90%EC%8A%A4%EC%BC%80%EC%9D%B4%EB%93%9C-%EC%96%BC%EA%B5%B4-%EA%B2%80%EC%B6%9C-Haar-Cascade-Face-Detection) 알고리즘을 사용하였다.
 
+위 파이프라인을 적용한 결과는 다음과 같다. (초상권 문제로 인해 블러 처리)
+<br/>
+<br/>
+![Frame 2 (1)](https://github.com/user-attachments/assets/424350ba-8d2a-4950-b31e-333fc0a909e8)
+<br/>
+<br/>
 
-
+그러나 위 파이프라인은 이미지에 따라서 가장 적절한 값이 달라지는 parameter가 너무 많은 탓에 서너개의 테스트 데이터가 아닌 수백 개의 실제 데이터셋에 적용되었을 때 결과가 만족스럽지 않았다. 
+따라서 다양한 사이즈의 텍스트가 빽빽하게 들어가 있어 인식이 어려운 이미지 하단 일정 비율을 인물 추출에서 제외하는 방식을 시도하였다. 
+벽보의 구성에 따라서 인물 마스킹이 얼마나 잘 되었는지의 차이는 있었지만, 전체적으로 원하던 결과가 나왔기에 이렇게 만들어진 파이프라인을 사용하였다. 
+코드는 [masking_pipeline.ipynb]()에서 확인 가능하다. 
+또 대략 2-3%의 비율로 얼굴 영역 인식이 실패하거나 추출이 실패하는 데이터가 존재, 이에 대해서는 팀원들이 직접 마스킹 작업을 수행하였다. 
+다음은 최종적 마스킹 알고리즘을 적용한 예시이다. 
+<br/>
+<br/>
+![Frame 3](https://github.com/user-attachments/assets/e4d9651b-680d-4d76-9105-611301cf22ea)
+<br/>
+<br/>
 
 
 ## 3. 대표색 추출
