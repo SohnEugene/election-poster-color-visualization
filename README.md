@@ -123,7 +123,7 @@ Semantic Segmentation 모델은 일반적으로 downsampling-upsampling과정을
 K-means clustering은 평균을 사용하여 입력된 데이터를 K개의 군집으로 묶는 알고리즘으로, [scikit-learn](https://github.com/scikit-learn/scikit-learn)에서 제공하는 KMeans 함수를 사용하였다. 
 인물 마스킹에 사용된 초록색(0, 255, 0)을 제외하도록 설정했으며, 3개의 군집을 형성한 다음 각 군집의 평균 값과 군집에 속하는 픽셀의 갯수를 세어 전체 픽셀 대비 비율을 계산하였다. 
 
-최종적으로 데이터를 스크래핑할 때 함께 가져온 (후보자 명 / 정당 명 / 출마 지역 / 당선 여부) 와 선관위가 공공데이터포털을 통해 제공하는 [중앙선거관리위원회 투·개표정보](https://www.data.go.kr/data/15000900/openapi.do)에서 가져온 각 후보별 득표율, 그리고 벽보 이미지에서 추출한 3가지 색과 각각의 비율이 저장된 데이터 프레임을 만들어서 시각화와 분석에 사용하였다. 이 과정에서 선관위 도서관 아카이빙에 누락된 자료가 존재함을 확인되었지만, 이 데이터들을 확보할 다른 방법을 찾을 수 없었기에 그대로 분석을 진행하였다. 이 과정을 다룬 전체 코드는 [color_extraction.ipynb]에서 확인할 수 있다.
+최종적으로 데이터를 스크래핑할 때 함께 가져온 (후보자 명 / 정당 명 / 출마 지역 / 당선 여부) 와 선관위가 공공데이터포털을 통해 제공하는 [중앙선거관리위원회 투·개표정보](https://www.data.go.kr/data/15000900/openapi.do)에서 가져온 각 후보별 득표율, 그리고 벽보 이미지에서 추출한 3가지 색과 각각의 비율이 저장된 데이터 프레임을 만들어서 시각화와 분석에 사용하였다. 이 과정에서 선관위 도서관 아카이빙에 누락된 자료가 존재함을 확인되었지만, 이 데이터들을 확보할 다른 방법을 찾을 수 없었기에 그대로 분석을 진행하였다. 이 과정을 다룬 전체 코드는 [color_extraction.ipynb](color_extraction.ipynb)에서 확인할 수 있다.
 
 <img width="1680" alt="image" src="https://github.com/user-attachments/assets/88669c70-3bb5-45dd-a3fb-1d4d659efdda">
 <img width="1680" alt="image" src="https://github.com/user-attachments/assets/66b22a65-1df5-4c91-97d6-9df5ca755dab">
@@ -162,6 +162,18 @@ K-means clustering은 평균을 사용하여 입력된 데이터를 K개의 군�
 <br/>
 
 
-## 기타
-### 대표색 = 정당색의 판단
-### 지역색과 
+## 대표색 = 정당색의 판단
+
+정당색을 선거 벽보의 대표색으로 활용하였는지 판단할 때 선거 벽보의 대표색이 정당색과 가까운 색이면, 선거 벽보에 정당색을 사용했다고 판단했다. 
+이때 정당색과 가까운 색이란 정당색 RGB값을 좌표로 볼 때, 정당색 좌표와의 유클리드 거리가 75 이하인 색으로 정의했다. 
+> 정당색 rgb (r1, g1, b1) 대표색 rgb (r2, g2, b2) 일 때, 루트{(r1-r2)^2+(g1-g2)^2+(b1-b2)^2} <= 75 
+<br/>
+<br/>
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/deed96e2-03be-4b49-b8e5-28bbd33c023b">
+<img width="500" alt="image" src="https://github.com/user-attachments/assets/8c91e576-1d4d-4006-8bd8-f8d7aa522265">
+<br/>
+<br/>
+
+각 선거에서 정당색을 대표색으로 사용한 벽보를 센 후, 각 선거 전체 벽보 수로 나누어 정당색을 벽보 대표색으로 사용한 비율을 계산하였다.
+<br/>
+
