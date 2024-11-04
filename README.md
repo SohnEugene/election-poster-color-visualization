@@ -33,11 +33,20 @@
 <br/>
 위 pdf 파일을 Python을 통해 스크래핑하여 구글 드라이브에 저장하였다. 
 환경은 Google Colab, requests와 Beautiful Soup 패키지를 사용하였다.  
-전체 코드는 크롤링.ipynb 파일에서 확인할 수 있다.
+선관 종류에 따라 검색 링크가 달라지기에 각각의 링크를 가져와 선거 대수와 페이지 숫자를 포매팅하여 사용했다.  
+전체 코드는 이 리포지토리의 [data_scraping.ipynb](https://github.com/SohnEugene/election-poster-color-visualization/blob/main/%E1%84%8F%E1%85%B3%E1%84%85%E1%85%A9%E1%86%AF%E1%84%85%E1%85%B5%E1%86%BC.ipynb) 파일에서 확인할 수 있다.
+
+
 
 
 
 ## 2. 데이터 전처리
+### JPG 파일로의 변환
+대표색 추출을 위해서는 pdf 파일을 jpg 파일로 변환해야 했다.  
+
+
+
+
 ## 3. 대표색 추출
 ## 4. 시각화
 ## 기타
