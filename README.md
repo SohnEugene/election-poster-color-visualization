@@ -1,4 +1,4 @@
-![Frame 4](https://github.com/user-attachments/assets/22e647eb-eb62-44c9-bb62-0ec551521113)# 선거 벽보, 색으로 풀어봤다!
+# 선거 벽보, 색으로 풀어봤다!
 (프로젝트 소개)  
 (윅스 링크)
 <br/>
@@ -169,8 +169,8 @@ K-means clustering은 평균을 사용하여 입력된 데이터를 K개의 군�
 > 정당색 rgb (r1, g1, b1) 대표색 rgb (r2, g2, b2) 일 때, 루트{(r1-r2)^2+(g1-g2)^2+(b1-b2)^2} <= 75 
 <br/>
 <br/>
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/deed96e2-03be-4b49-b8e5-28bbd33c023b">
-<img width="500" alt="image" src="https://github.com/user-attachments/assets/8c91e576-1d4d-4006-8bd8-f8d7aa522265">
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/deed96e2-03be-4b49-b8e5-28bbd33c023b">
+<img width="400" alt="image" src="https://github.com/user-attachments/assets/8c91e576-1d4d-4006-8bd8-f8d7aa522265">
 <br/>
 <br/>
 
